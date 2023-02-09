@@ -4,19 +4,16 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, number,name, password=None,otp=None):
+    def create_user(self, email,name, password=None,otp=None):
         """
         Creates and saves a User with the given email, date of
         birth and password.
         """
         if not email:
             raise ValueError('Users must have an email address')
-        if not number:
-            raise ValueError('Users must have an  Number')
-
         user = self.model(
             email=self.normalize_email(email),
-            number=number,
+           
             name=name,
             otp=otp
         )
@@ -24,19 +21,7 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
-    def update_unverified_data(self,email,number,name,password,otp):
-        if not email:
-            raise ValueError('Users must have an email address')
-        if not number:
-            raise ValueError('Users must have an  Number')
-        user=User.objects.filter(email=email,number=number)
-        user.email=self.normalize_email(email=email)
-        user.number=number
-        user.name=name
-        user.otp=otp
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
+
     def create_superuser(self, email, number,name, password=None):
         """
         Creates and saves a superuser with the given email, date of
@@ -60,7 +45,7 @@ class User(AbstractBaseUser):
         max_length=150,
         unique=True,
     )
-    number=models.CharField(unique=True,max_length=10)
+   
     name=models.CharField(max_length=30)
     description=models.TextField(max_length=150)
 
@@ -71,7 +56,7 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name','number']
+    REQUIRED_FIELDS = ['name',]
 
     def __str__(self):
          return self.email
